@@ -7,9 +7,9 @@
 
 AutoJs版本：Auto.js Pro 8.8.20
 
-OCR插件：https://pro.autojs.org/docs/#/zh-cn/thirdPartyPlugin
+OCR插件：https://pro.autojs.org/docs/#/zh-cn/thirdPartyPlugins?id=ocr%e6%8f%92%e4%bb%b6
 
-此内测版本未适配其他机型，在本机型的答题正确率在90%以上，目前存在的主要问题有：
+此内测版本未适配其他机型，答题正确率在90%以上，目前存在的主要问题有：
 
 1. 因本地OCR识别需要两百至数百毫秒，故第1题作答存在延迟，且题目越长延迟越大；
 
