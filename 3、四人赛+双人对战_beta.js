@@ -15,12 +15,17 @@ if (!requestScreenCapture()) {
 }
 const v = dialogs.select("请选择答题竞赛", ["四  人  赛", "双人对战"]) + 8;
 if (v == 7) { exit(); }
-var w = rawInput("请设置作答延迟时间（ms）", 550);
-if (w < 500) { w = 555; }
+var w = rawInput("请设置作答延迟时间（ms）", 520);
+if (w < 500) { w = 500; }
 launch("cn.xuexi.android");
+toast("OCR插件加载中...");
 var ocr = $plugins.load("com.hraps.ocr");
-var E = [
-    '蓓蕾bèilěi',
+sleep(1000);
+var image = captureScreen();
+var img = images.clip(image, 142, 750, 500, 80);
+var results = ocr.detect(img.getBitmap(), 1);
+img.recycle();
+var WA = ['蓓蕾bèilěi',
     '迸bēng裂',
     '庇bì护',
     '濒pīn临',
@@ -228,17 +233,15 @@ var E = [
     '恣意妄为',
     '走头无路',
     '坐落',
-    '史记',
-    '左传',
+    '《史记》',
+    '《左传》',
     '十日',
     '五日',
     '城乡居民收入增长',
     '统筹账户',
     '全额',
-    '65年限'
-];
-var N = [
-    0,
+    '65年限'];
+var wA = [0,
     1,
     0,
     1,
@@ -453,10 +456,8 @@ var N = [
     0,
     3,
     0,
-    0
-];
-var F = [
-    '纳米是',
+    0];
+var WT = ['纳米是',
     '癌症的本质是',
     '每年的6月5日是',
     '深圳市的市花是',
@@ -1682,6 +1683,7 @@ var F = [
     '北宋画家的作品千里江山图描绘的是祖国锦绣山河为青绿山水画的代表',
     '北宋庆历三年为解决官僚队伍庞大行政效率低人民生活困苦等问题与富',
     '对没收的非法烟花爆竹以及生产经营企业弃置的废旧烟花爆竹应当就地',
+    '根据中华人民共和国安全生产法应急管理部门和对有关行业领域的安全',
     '根据中华人民共和国土壤污染防治法用途变更为住宅公共管理与公共服',
     '黄芩是一味常用的清热燥湿泻火解毒中药为唇形科植物黄芩的干燥根味',
     '每年春运机场车站等公共交通枢纽都会迎来大规模客流这时应格外注意',
@@ -1751,7 +1753,6 @@ var F = [
     '党的十九大报告指出伟大斗争伟大工程伟大事业伟大梦想紧密联系相互',
     '高山滑雪起源于欧洲的阿尔卑斯山脉地区所以又被称为阿尔卑斯滑雪19',
     '根据中国共产党地方委员会工作条例党的地方委员会由同级党代表大会',
-    '根据中华人民共和国安全生产法安全生产监督管理部门和对有关行业领',
     '驾驶机动车在高速公路上行驶遇有雾雨雪沙尘冰雹等低能见度气象条件',
     '泥石流是山区沟谷中由暴雨冰雪融化等激发的含有大量泥沙石块的特殊',
     '三江源是我国最大的自然保护区位于青藏高原的腹地有中华水塔的美誉',
@@ -1885,6 +1886,7 @@ var F = [
     '大将筹边尚未还湖湘子弟满天山新栽杨柳三千里引得春风度玉关这首诗',
     '2015年中国科学家屠呦呦获得了诺贝尔生理学或医学奖这是我们中国人',
     '成立于1965年的联合国署是联合国系统最大的多边无偿援助机构其前身',
+    '根据中国共产党党校行政学院工作条例市地级以上党校行政学院教学安',
     '根据中华人民共和国禁毒法国家对麻醉药品和精神药品实行管制对麻醉',
     '根据中华人民共和国土壤污染防治法未达到土壤污染风险评估报告确定',
     '汉字产生的标志是殷商后期所形成的初步定型的甲骨文其后经过了三千',
@@ -1916,6 +1918,7 @@ var F = [
     '根据中国共产党纪律处分条例党员受到警告处分内受到严重警告处分内',
     '根据中国共产党纪律处分条例执行党纪处分决定的机关或者受处分党员',
     '根据中华人民共和国反间谍法国家安全机关的工作人员在依法执行紧急',
+    '全球首艘获得智能船舶入级符号的极地科考破冰船号装备有国际先进的',
     '如果你接到自称是社保局工作人员打来的电话说社保卡有问题并且对方',
     '由于是之于蓝牛犇等人主演的电影龙须沟根据创作的同名话剧改编讲述',
     '1995年1月1日由四川日报社主办的创刊该报在国内首次提出市民新闻报',
@@ -2003,6 +2006,7 @@ var F = [
     '根据中华人民共和国英雄烈士保护法英雄烈士没有近亲属或者近亲属不',
     '鲁迅艺术学院是中国共产党于1938年在延安创办的一所培养文学艺术干',
     '元杂剧中女性形象是一道鲜艳夺目的风景冲破封建礼教束缚追求理想与',
+    '2021年1月22日我国首部战疫纪录电影上映影片以平实的语言讲述了武',
     '1975年5月27日中国登山队再次登上素有地球第三极之称的珠穆朗玛峰',
     '根据国务院关于整合城乡居民基本医疗保险制度的意见整合建立城乡居',
     '根据中国共产党党内监督条例建立健全党中央统一领导党委党组监督纪',
@@ -2075,6 +2079,7 @@ var F = [
     '根据中国共产党问责条例被问责领导干部应当向作出问责决定的党组织',
     '客有问曰六一何谓也居士曰吾家藏书一万卷集录三代以来金石遗文一千',
     '建立健全党支部按期换届提醒督促机制根据党组织隶属关系和干部管理',
+    '从2020年1月31日起武汉儿童医院开始陆续接收新冠病毒感染的母亲所',
     '健康中国2030规划纲要指出制定实施青少年妇女老年人职业群体及残疾',
     '根据中华人民共和国反间谍法在境外受胁迫或者受诱骗参加敌对组织间',
     '职工因工作遭受事故伤害或者患职业病需要暂停工作接受工伤医疗的在',
@@ -2086,10 +2091,8 @@ var F = [
     '法治中国建设规划20202025年明确到2025年党领导全面依法治国体制机',
     '1949年重庆解放前夕还被国民党反动派囚禁在歌乐山下白公馆监狱二室',
     '根据中华人民共和国海商法船舶发生海上事故危及在船人员和财产的安',
-    '根据国家旅游局关于促进文化与旅游结合发展的指导意见对传统技艺类'
-];
-var M = [
-    1,
+    '根据国家旅游局关于促进文化与旅游结合发展的指导意见对传统技艺类'];
+var wT = [1,
     0,
     1,
     2,
@@ -3317,6 +3320,7 @@ var M = [
     1,
     0,
     0,
+    0,
     2,
     2,
     1,
@@ -3384,7 +3388,6 @@ var M = [
     1,
     1,
     1,
-    0,
     0,
     0,
     0,
@@ -3519,6 +3522,7 @@ var M = [
     2,
     0,
     2,
+    2,
     1,
     2,
     3,
@@ -3547,6 +3551,7 @@ var M = [
     2,
     0,
     0,
+    2,
     2,
     2,
     1,
@@ -3637,6 +3642,7 @@ var M = [
     1,
     2,
     0,
+    0,
     2,
     0,
     2,
@@ -3708,6 +3714,7 @@ var M = [
     0,
     1,
     0,
+    1,
     1,
     0,
     3,
@@ -3719,10 +3726,17 @@ var M = [
     2,
     3,
     1,
-    0
-];
-var T = [
-    '刺猬为动物',
+    0];
+var YA = ['惆怅chóuchàng',
+    '忧心忡忡zhōng',
+    '火中取粟',
+    '停泊',
+    '雾淞',
+    '坐阵',
+    '人民代表大会制度',
+    '中国共产党领导的多党合作和政治协商制度'];
+var yA = [0, 1, 1, 0, 1, 1, 0, 2];
+var YT = ['刺猬为动物',
     '海平面平的',
     '蛙属于动物',
     '海星食肉动物',
@@ -4320,10 +4334,8 @@ var T = [
     '2019年8月22日习近平在甘肃考察工作结束时指出我2009年来甘肃的时',
     '2020年3月31日习近平在浙江杭州西溪国家湿地公园察看湿地保护利用',
     '2016年1月18日习近平总书记在省部级主要领导干部学习贯彻党的十八',
-    '根据机翼相对于机身的垂直位置可分为上单翼中单翼和下单翼可使机身'
-];
-var K = [
-    1,
+    '根据机翼相对于机身的垂直位置可分为上单翼中单翼和下单翼可使机身'];
+var yT = [1,
     1,
     0,
     0,
@@ -4921,35 +4933,23 @@ var K = [
     1,
     0,
     2,
-    0
-];
-var S = [
-    '惆怅chóuchàng',
-    '忧心忡忡zhōng',
-    '火中取粟',
-    '停泊',
-    '雾淞',
-    '坐阵',
-    '人民代表大会制度',
-    '中国共产党领导的多党合作和政治协商制度'
-];
-var L = [0, 1, 1, 0, 1, 1, 0, 2];
-var k = K.length;
-var l = L.length;
-var m = M.length;
-var n = N.length;
+    0];
+var wa = wA.length;
+var wt = wT.length;
+var ya = yA.length;
+var yt = yT.length;
 if (text("继续挑战").exists()) {
     text("继续挑战").findOne().click();
 } else {
     text("我的").findOne().click();
     text("我要答题").findOne().parent().click();
-    depth(22).indexInParent(v).findOne().click();
+    text("答题竞赛").findOne().parent().child(v).click();
 }
 if (v == 8) {
     text("开始比赛").findOne().click();
 }
 else {
-    sleep(333);
+    sleep(500);
     text("随机匹配").findOne().parent().child(0).click();
 }
 var bx = depth(30).findOne().bounds();
@@ -4963,207 +4963,221 @@ var h2 = h0 * 2 + 3;
 log(bx, by);
 while (!text("知道了").exists()) {
     var j = 0;
-    while (!(className("android.widget.Image").indexInParent(8).exists() || text("继续挑战").exists())) {
-        var image = captureScreen();
-        if (images.findColorInRegion(image, "#1A1F25", x, y, w, h1, 15)) {
-            if (j != 0) { var time = new Date(); }
-            var tag = depth(29).findOne().text();
-            if (tag == '        ') {
-                var h = depth(29).findOne().bounds().height();
-            } else {
-                var h = depth(29).text("").findOne().bounds().top - depth(28).findOne().bounds().top;
-            }
-            var img = images.clip(image, x, y, w, h1 + 7 > h ? h1 : h2);
-            var results = ocr.detect(img.getBitmap(), 1);
-            img.recycle();
-            results = ocr.filterScore(results, 0.5, 0.5, 0.5);
-            var r = results.size();
-            var tm = [];
-            for (let i = 0; i < r; i++) {
-                let result = results.get(i);
-                tm[i] = [result.text, (parseInt((result.frame.get(1) - y - 2) / h0)) * 1000 + result.frame.get(0)];
-            }
-            tm.sort((a, b) => a[1] - b[1]);
-            var t = "";
-            for (let i = 0; i < r; i++) {
-                t = t + tm[i][0];
-            }
-            log(t);
-            if (t.charAt(1) == ".") {
-                t = t.slice(2);
-            }
-            t = t.replace(/[\s，,“”"‘’'《》<>（）()、。.：:；;！!？?－—\-~•·…]/g, "");
-            var s = t.slice(0, 6);
-            if (tag == '        ') {
-                if (t.indexOf("关因") != -1) {
-                    if (j != 0) {
-                        if (className("android.widget.Image").indexInParent(8).exists() || text("继续挑战").exists()) { break; }
-                        var wait = w - (new Date() - time);
-                        if (wait > 0) { sleep(wait); }
-                    }
-                    if (h > 450 && h < 500) {
-                        className("android.widget.ListView").findOne().child(0).child(0).child(0).click();
-                    } else {
-                        className("android.widget.ListView").findOne().child(1).child(0).child(0).click();
-                    }
-                } else if (['选择正确的读', '选择词语的正', '下列不属于二', '劳动行政部门', '人力资源和社', '选怪正确的读', '选怪词语的正', '选搔正确的读', '选搔词语的正'].indexOf(s) != -1) {
-                    image = captureScreen();
-                    var b = className("android.widget.ListView").findOne().child(0).bounds();
-                    while (!images.findColorInRegion(image, "#1A1F25", b.left, b.top, b.width(), b.height(), 15)) {
-                        image = captureScreen();
-                    };
-                    img = images.clip(image, b.left, b.top, b.width(), b.height());
-                    results = ocr.detect(img.getBitmap(), 1);
-                    img.recycle();
-                    results = ocr.filterScore(results, 0.5, 0.5, 0.5);
-                    r = results.size();
-                    var a = "";
-                    for (let i = 0; i < r; i++) {
-                        a = a + results.get(i).text;
-                    }
-                    if (a.charAt(1) == ".") {
-                        a = a.slice(2);
-                    }
-                    log(a);
-                    a = a.replace(/[\s《》]/g, "");
-                    var p = a.split("");
-                    var q = p.length;
-                    var scr = 0;
-                    var o = 1;
-                    let g = 0;
-                    while (g < n) {
-                        var score = 0;
-                        for (let i = 0; i < q; i++) {
-                            if (E[g].indexOf(p[i]) != -1) {
-                                score++;
-                            }
-                        }
-                        if (score > scr) {
-                            scr = score;
-                            o = N[g];
-                        }
-                        g++;
-                    }
-                    if (j != 0) {
-                        if (className("android.widget.Image").indexInParent(8).exists() || text("继续挑战").exists()) { break; }
-                        var wait = w - (new Date() - time);
-                        if (wait > 0) { sleep(wait); }
-                    }
-                    className("android.widget.ListView").findOne().child(o).child(0).child(0).click();
-                } else {
-                    var p = t.split("");
-                    var q = p.length;
-                    var scr = 0.5;
-                    var o = 1;
-                    let g = 0;
-                    while (g < m) {
-                        var score = 0;
-                        for (let i = 0; i < q; i++) {
-                            if (F[g].indexOf(p[i]) != -1) {
-                                score++;
-                            }
-                        }
-                        score = score / q;
-                        if (score > scr) {
-                            scr = score;
-                            o = M[g];
-                        }
-                        g++;
-                    }
-                    if (j != 0) {
-                        if (className("android.widget.Image").indexInParent(8).exists() || text("继续挑战").exists()) { break; }
-                        var wait = w - (new Date() - time);
-                        if (wait > 0) { sleep(wait); }
-                    }
-                    className("android.widget.ListView").findOne().child(o).child(0).child(0).click();
-                }
-            } else {
-                if (s == "2014年2") {
-                    if (j != 0) {
-                        if (className("android.widget.Image").indexInParent(8).exists() || text("继续挑战").exists()) { break; }
-                        var wait = w - (new Date() - time);
-                        if (wait > 0) { sleep(wait); }
-                    }
-                    if (h < 700) {
-                        className("android.widget.ListView").findOne().child(0).child(0).child(0).click();
-                    } else {
-                        className("android.widget.ListView").findOne().child(3).child(0).child(0).click();
-                    }
-                } else if (['选择正确的读', '下列词形正确', '2014年9', '选怪正确的读', '选搔正确的读'].indexOf(s) != -1) {
-                    image = captureScreen();
-                    var b = className("android.widget.ListView").findOne().child(0).bounds();
-                    while (!images.findColorInRegion(image, "#1A1F25", b.left, b.top, b.width(), b.height(), 15)) {
-                        image = captureScreen();
-                    };
-                    img = images.clip(image, b.left, b.top, b.width(), b.height());
-                    results = ocr.detect(img.getBitmap(), 1);
-                    img.recycle();
-                    results = ocr.filterScore(results, 0.5, 0.5, 0.5);
-                    r = results.size();
-                    var a = "";
-                    for (let i = 0; i < r; i++) {
-                        a = a + results.get(i).text;
-                    }
-                    if (a.charAt(1) == ".") {
-                        a = a.slice(2);
-                    }
-                    log(a);
-                    a = a.replace(/[\s]/g, "");
-                    var p = a.split("");
-                    var q = p.length;
-                    var scr = 0;
-                    var o = 1;
-                    let g = 0;
-                    while (g < l) {
-                        var score = 0;
-                        for (let i = 0; i < q; i++) {
-                            if (S[g].indexOf(p[i]) != -1) {
-                                score++;
-                            }
-                        }
-                        if (score > scr) {
-                            scr = score;
-                            o = L[g];
-                        }
-                        g++;
-                    }
-                    if (j != 0) {
-                        if (className("android.widget.Image").indexInParent(8).exists() || text("继续挑战").exists()) { break; }
-                        var wait = w - (new Date() - time);
-                        if (wait > 0) { sleep(wait); }
-                    }
-                    className("android.widget.ListView").findOne().child(o).child(0).child(0).click();
-                } else {
-                    var p = t.split("");
-                    var q = p.length;
-                    var scr = 0.5;
-                    var o = 1;
-                    let g = 0;
-                    while (g < k) {
-                        var score = 0;
-                        for (let i = 0; i < q; i++) {
-                            if (T[g].indexOf(p[i]) != -1) {
-                                score++;
-                            }
-                        }
-                        score = score / q;
-                        if (score > scr) {
-                            scr = score;
-                            o = K[g];
-                        }
-                        g++;
-                    }
-                    if (j != 0) {
-                        if (className("android.widget.Image").indexInParent(8).exists() || text("继续挑战").exists()) { break; }
-                        var wait = w - (new Date() - time);
-                        if (wait > 0) { sleep(wait); }
-                    }
-                    className("android.widget.ListView").findOne().child(o).child(0).child(0).click();
-                }
-            }
-            j++;
+    while (!className("android.widget.Image").indexInParent(2).exists()) {
+        do {
+            var image = captureScreen();
+            var sign = images.findColorInRegion(image, "#1A1F25", x, y, w, h1, 15);
+        } while (j != 0 && sign)
+        while (!sign) {
+            var image = captureScreen();
+            sign = images.findColorInRegion(image, "#1A1F25", x, y, w, h1, 15);
         }
-        sleep(1666);
+        if (j != 0) { var time = new Date(); }
+        var tag = depth(29).findOne().text();
+        if (tag == '        ') {
+            var h = depth(29).findOne().bounds().height();
+        } else {
+            var h = depth(29).text("").findOne().bounds().top - depth(28).findOne().bounds().top;
+        }
+        img = images.clip(image, x, y, w, h1 + 7 > h ? h1 : h2);
+        results = ocr.detect(img.getBitmap(), 1);
+        img.recycle();
+        results = ocr.filterScore(results, 0.5, 0.5, 0.5);
+        var r = results.size();
+        var tm = [];
+        for (let i = 0; i < r; i++) {
+            let result = results.get(i);
+            tm[i] = [result.text, (parseInt((result.frame.get(1) - y - 2) / h0)) * 1000 + result.frame.get(0)];
+        }
+        tm.sort((a, b) => a[1] - b[1]);
+        var t = "";
+        for (let i = 0; i < r; i++) {
+            t = t + tm[i][0];
+        }
+        log(t);
+        if (t.charAt(1) == ".") {
+            t = t.slice(2);
+        }
+        t = t.replace(/[\s，,“”"‘’'《》<>（）()、。.：:；;！!？?－—\-~•·…]/g, "");
+        var s = t.slice(0, 6);
+        if (tag == '        ') {
+            if (t.indexOf("关因") != -1) {
+                if (j != 0) {
+                    var wait = w - (new Date() - time);
+                    if (wait > 0) { sleep(wait); }
+                    if (className("android.widget.Image").indexInParent(2).exists()) { break; }
+                }
+                if (h > h0 * 5 + 40) {
+                    className("android.widget.ListView").findOne().child(0).child(0).click();
+                } else {
+                    className("android.widget.ListView").findOne().child(1).child(0).click();
+                }
+                log(t, h);
+            } else if (['选择正确的读', '选择词语的正', '下列不属于二', '劳动行政部门', '人力资源和社', '选怪正确的读', '选怪词语的正', '选搔正确的读', '选搔词语的正'].indexOf(s) != -1) {
+                image = captureScreen();
+                var b = className("android.widget.ListView").findOne().child(0).bounds();
+                while (!images.findColorInRegion(image, "#1A1F25", b.left, b.top, b.width(), b.height(), 15)) {
+                    image = captureScreen();
+                };
+                img = images.clip(image, b.left, b.top, b.width(), b.height());
+                results = ocr.detect(img.getBitmap(), 1);
+                img.recycle();
+                results = ocr.filterScore(results, 0.5, 0.5, 0.5);
+                r = results.size();
+                var a = "";
+                for (let i = 0; i < r; i++) {
+                    a = a + results.get(i).text;
+                }
+                if (a.charAt(1) == ".") {
+                    a = a.slice(2);
+                }
+                a = a.replace(/[\s]/g, "");
+                var p = a.split("");
+                var q = p.length;
+                var scr = 0;
+                var o = 1;
+                let g = 0;
+                while (g < wa) {
+                    var score = 0;
+                    for (let i = 0; i < q; i++) {
+                        if (WA[g].indexOf(p[i]) != -1) {
+                            score++;
+                        }
+                    }
+                    if (score > scr) {
+                        scr = score;
+                        o = wA[g];
+                        if (scr == q) { break; }
+                    }
+                    g++;
+                }
+                if (j != 0) {
+                    var wait = w - (new Date() - time);
+                    if (wait > 0) { sleep(wait); }
+                    if (className("android.widget.Image").indexInParent(2).exists()) { break; }
+                }
+                className("android.widget.ListView").findOne().child(o).child(0).click();
+                log(a, "WA", g, o, scr);
+            } else {
+                var p = t.split("");
+                var q = p.length;
+                var scr = 0.5;
+                var o = 1;
+                let g = 0;
+                while (g < wt) {
+                    var score = 0;
+                    for (let i = 0; i < q; i++) {
+                        if (WT[g].indexOf(p[i]) != -1) {
+                            score++;
+                        }
+                    }
+                    score = score / q;
+                    if (score > scr) {
+                        scr = score;
+                        o = wT[g];
+                        if (scr == 1) { break; }
+                    }
+                    g++;
+                }
+                if (j != 0) {
+                    var wait = w - (new Date() - time);
+                    if (wait > 0) { sleep(wait); }
+                    if (className("android.widget.Image").indexInParent(2).exists()) { break; }
+                }
+                className("android.widget.ListView").findOne().child(o).child(0).click();
+                log(t, "WT", g, o, scr);
+            }
+        } else {
+            if (s == "2014年2") {
+                if (j != 0) {
+                    var wait = w - (new Date() - time);
+                    if (wait > 0) { sleep(wait); }
+                    if (className("android.widget.Image").indexInParent(2).exists()) { break; }
+                }
+                if (h < h0 * 9 + 40) {
+                    className("android.widget.ListView").findOne().child(0).child(0).click();
+                } else {
+                    className("android.widget.ListView").findOne().child(3).child(0).click();
+                }
+            } else if (['选择正确的读', '下列词形正确', '2014年9', '选怪正确的读', '选搔正确的读'].indexOf(s) != -1) {
+                image = captureScreen();
+                var b = className("android.widget.ListView").findOne().child(0).bounds();
+                while (!images.findColorInRegion(image, "#1A1F25", b.left, b.top, b.width(), b.height(), 15)) {
+                    image = captureScreen();
+                };
+                img = images.clip(image, b.left, b.top, b.width(), b.height());
+                results = ocr.detect(img.getBitmap(), 1);
+                img.recycle();
+                results = ocr.filterScore(results, 0.5, 0.5, 0.5);
+                r = results.size();
+                var a = "";
+                for (let i = 0; i < r; i++) {
+                    a = a + results.get(i).text;
+                }
+                if (a.charAt(1) == ".") {
+                    a = a.slice(2);
+                }
+                log(a);
+                a = a.replace(/[\s]/g, "");
+                var p = a.split("");
+                var q = p.length;
+                var scr = 0;
+                var o = 1;
+                let g = 0;
+                while (g < ya) {
+                    var score = 0;
+                    for (let i = 0; i < q; i++) {
+                        if (YA[g].indexOf(p[i]) != -1) {
+                            score++;
+                        }
+                    }
+                    if (score > scr) {
+                        scr = score;
+                        o = yA[g];
+                        if (scr == q) { break; }
+                    }
+                    g++;
+                }
+                if (j != 0) {
+                    var wait = w - (new Date() - time);
+                    if (wait > 0) { sleep(wait); }
+                    if (className("android.widget.Image").indexInParent(2).exists()) { break; }
+                }
+                className("android.widget.ListView").findOne().child(o).child(0).click();
+                log(a, "YA", g, o, scr);
+            } else {
+                var p = t.split("");
+                var q = p.length;
+                var scr = 0.5;
+                var o = 1;
+                let g = 0;
+                while (g < yt) {
+                    var score = 0;
+                    for (let i = 0; i < q; i++) {
+                        if (YT[g].indexOf(p[i]) != -1) {
+                            score++;
+                        }
+                    }
+                    score = score / q;
+                    if (score > scr) {
+                        scr = score;
+                        o = yT[g];
+                        if (scr == 1) { break; }
+                    }
+                    g++;
+                }
+                if (j != 0) {
+                    var wait = w - (new Date() - time);
+                    if (wait > 0) { sleep(wait); }
+                    if (className("android.widget.Image").indexInParent(2).exists()) { break; }
+                }
+                className("android.widget.ListView").findOne().child(o).child(0).click();
+                log(t, "YT", g, o, scr);
+            }
+        }
+        j++;
+        sleep(1500);
+        if (text("继续挑战").exists()) { break; }
     }
     text("继续挑战").findOne().click();
     if (v == 8) {
@@ -5172,6 +5186,6 @@ while (!text("知道了").exists()) {
     else {
         text("随机匹配").findOne().parent().child(0).click();
     }
-    sleep(555);
+    sleep(500);
 }
 exit();
