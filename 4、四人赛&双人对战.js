@@ -3,7 +3,7 @@ const v = dialogs.select("请选择答题竞赛", ["四  人  赛", "双人对�
 if (v == 7) { exit(); }
 const j = rawInput("请设定本次竞赛局数", 2);
 if (j < 1) { exit(); }
-var w = rawInput("请设置答题延迟时间 (ms)", 520);
+var w = rawInput("请设置作答延迟时间 (ms)", 520);
 if (w < 500) { w = 500; }
 var thd = threads.start(function () {
     className("android.widget.Button").text("立即开始").findOne().click();
@@ -4967,12 +4967,12 @@ if (text("继续挑战").exists()) {
 }
 if (v == 8) {
     text("开始比赛").findOne().click();
-    toastLog("开始四人赛");
+    toastLog("四人赛开始");
 }
 else {
     sleep(500);
     text("随机匹配").findOne().parent().child(0).click();
-    toastLog("开始双人对战");
+    toastLog("双人对战开始");
 }
 sleep(500);
 /*const x0 = 142;//142|135
@@ -5031,6 +5031,10 @@ while (!text("知道了").exists()) {
         if (c != -1) {
             words[c] = "。";
         }
+        c = words.indexOf("o");
+        if (c != -1) {
+            words[c] = "。";
+        }
         if (words[0].charAt(1) == ".") {
             words[0] = words[0].slice(2);
         } else if (words[1].charAt(1) == ".") {
@@ -5054,7 +5058,7 @@ while (!text("知道了").exists()) {
             if (words[0].charAt(1) == ".") {
                 words[0] = words[0].slice(2);
             }
-            var a = words.join("").replace(/[\s]/g, "");
+            var a = words.join("").replace(/\s/g, "");
             if (a.charAt(0) == "防") {
                 a = "妨碍";
             }
@@ -5080,55 +5084,28 @@ while (!text("知道了").exists()) {
                 }
                 i++;
             }
-            if (m != 0) {
-                var d = w - (new Date() - start);
-                if (d > 0) { sleep(d); }
-                if (className("android.widget.Image").indexInParent(2).exists()) { break; }
-            }
-            className("android.widget.ListView").findOne().child(c).child(0).click();
             a = "A";
             scr = scr / x;
         } else if (t.includes("照宪")) {
-            if (m != 0) {
-                var d = w - (new Date() - start);
-                if (d > 0) { sleep(d); }
-                if (className("android.widget.Image").indexInParent(2).exists()) { break; }
-            }
             if (h > h1 * 6) {
-                className("android.widget.ListView").findOne().child(1).child(0).click();
                 c = 1;
             } else {
-                className("android.widget.ListView").findOne().child(0).child(0).click();
                 c = 0;
             }
             var a = "?";
             var scr = 1;
         } else if (t.includes("关因")) {
-            if (m != 0) {
-                var d = w - (new Date() - start);
-                if (d > 0) { sleep(d); }
-                if (className("android.widget.Image").indexInParent(2).exists()) { break; }
-            }
             if (h > h1 * 5.4) {
-                className("android.widget.ListView").findOne().child(0).child(0).click();
                 c = 0;
             } else {
-                className("android.widget.ListView").findOne().child(1).child(0).click();
                 c = 1;
             }
             var a = "?";
             var scr = 1;
         } else if (t.includes("4年2")) {
-            if (m != 0) {
-                var d = w - (new Date() - start);
-                if (d > 0) { sleep(d); }
-                if (className("android.widget.Image").indexInParent(2).exists()) { break; }
-            }
             if (h > h1 * 9) {
-                className("android.widget.ListView").findOne().child(3).child(0).click();
                 c = 3;
             } else {
-                className("android.widget.ListView").findOne().child(0).child(0).click();
                 c = 0;
             }
             var a = "?";
@@ -5140,29 +5117,29 @@ while (!text("知道了").exists()) {
             var scr = 0.7;
             let i = 0;
             while (i < k) {
-                var s = T[i].slice(0, x);
+                var a = T[i].slice(0, x);
                 var score = 0;
                 for (let h = 0; h < x; h++) {
-                    if (s.includes(X[h])) {
+                    if (a.includes(X[h])) {
                         score++;
                     }
                 }
                 score = score / x;
                 if (score > scr) {
                     c = K[i];
-                    scr = score - (t == s ? 0 : 0.01);
+                    scr = score - (t == a ? 0 : 0.01);
                     if (scr == 1) { break; }
                 }
                 i++;
             }
-            if (m != 0) {
-                var d = w - (new Date() - start);
-                if (d > 0) { sleep(d); }
-                if (className("android.widget.Image").indexInParent(2).exists()) { break; }
-            }
-            className("android.widget.ListView").findOne().child(c).child(0).click();
             a = "T";
         }
+        if (m != 0) {
+            var d = w - (new Date() - start);
+            if (d > 0) { sleep(d); }
+            if (className("android.widget.Image").indexInParent(2).exists()) { break; }
+        }
+        className("android.widget.ListView").findOne().child(c).child(0).click();
         U[u + m] = [a + n + (-m - 1), h, c, scr, JSON.stringify(words), t];
         log(U[u + m].join("|"));
         m++;
@@ -5180,7 +5157,7 @@ while (!text("知道了").exists()) {
         }
         else {
             t = "";
-            L.child(i).child(2).children().forEach(function (a) {
+            L.child(i).child(2).children().forEach(a => {
                 t = t + a.text();
             });
         }
