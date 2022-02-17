@@ -1,19 +1,20 @@
 auto.waitFor();
-if (!requestScreenCapture()) {
-    toastLog("请求截图失败");
-    exit();
-}
 const v = dialogs.select("请选择答题竞赛", ["四  人  赛", "双人对战"]) + 8;
 if (v == 7) { exit(); }
-var j = rawInput("请设定本次答题局数：", 2);
+const j = rawInput("请设定本次竞赛局数", 2);
 if (j < 1) { exit(); }
-var d = rawInput("请设置答题延迟时间 (ms)", 520);
-if (d < 500) { d = 500; }
+var w = rawInput("请设置答题延迟时间 (ms)", 520);
+if (w < 500) { w = 500; }
+var thd = threads.start(function () {
+    className("android.widget.Button").text("立即开始").findOne().click();
+});
+if (!requestScreenCapture()) {
+    toastLog("请求截图权限失败");
+    exit();
+}
+thd.interrupt();
 launch("cn.xuexi.android");
-toastLog("OCR预热中...");
-sleep(200);
-var image = captureScreen();
-var words = paddle.ocrText(image);
+toastLog("加载OCR模型");
 const A = ['蓓蕾bèilěi',
     '迸bēng裂',
     '庇bì护',
@@ -4952,7 +4953,9 @@ const o = O.length;
 const k = K.length;
 var U = [];
 var u = 0;
-var n = 1;
+var n = 0;
+var image = captureScreen();
+var words = paddle.ocrText(image);
 if (text("继续挑战").exists()) {
     text("继续挑战").findOne().click();
 } else {
@@ -4964,40 +4967,56 @@ if (text("继续挑战").exists()) {
 }
 if (v == 8) {
     text("开始比赛").findOne().click();
+    toastLog("开始四人赛");
 }
 else {
     sleep(500);
     text("随机匹配").findOne().parent().child(0).click();
+    toastLog("开始双人对战");
 }
-var b30 = depth(30).findOne().bounds();
-var b28 = depth(28).findOne().bounds();
-//以下6个参数与屏幕截图的裁剪区域有关，建议改成数值以加快首题答题速度，同时删除上面的b30、b28和下面的console.info...
-const x = parseInt(b30.left - (b30.left - b28.left) / 3);
-const y = b28.top;
-const w = parseInt(b30.width() + (b28.width() - b30.width()) / 3);
-const h0 = parseInt(b30.height() / 24 * 13);
-const h1 = h0 + 3;
-const h2 = h0 * 2 + 3;
-console.info("b30 =", b30, "| b28 =", b28);
-console.info("x =", x, "; y =", y, "; w =", w, "; h0 =", h0, "; h1 =", h1, "; h2 =", h2, ";");
+sleep(500);
+/*const x0 = 142;//142|135
+const y0 = 750;//750|723
+const w0 = 15;
+const x1 = 85;
+const y1 = 694;//694|666
+const w1 = 910;
+const h1 = 81;
+const h2 = 159;
+depth(30).waitFor();
+//以上8个参数与屏幕截图的检测和识别区域相关，建议根据机型修改数值以加快首题答题速度，同时删除以下13行代码。*/
+const b30 = depth(30).findOne().bounds();
+const b28 = depth(28).findOne().bounds();
+const b21 = depth(21).findOnce(1).bounds();
+const x0 = parseInt(b30.left + (b30.left - b28.left) / 3 * 2);
+const y0 = parseInt(b28.top + b21.height() / 136 * 19);
+const w0 = parseInt(b28.width() / 63);
+const x1 = parseInt(b30.left - (b30.left - b28.left) / 3);
+const y1 = b28.top;
+const w1 = parseInt(b30.width() + (b28.width() - b30.width()) / 3);
+const h1 = parseInt(b21.height() / 136 * 27);
+const h2 = parseInt(b21.height() / 136 * 53);
+console.info("b30 =", b30, "| b28 =", b28, "| b21 =", b21);
+console.info("x0 =", x0, "| y0 =", y0, "| w0 =", w0, "| x1 =", x1, "| y1 =", y1, "| w1 =", w1, "| h1 =", h1, "| h2 =", h2);//*/
 while (!text("知道了").exists()) {
+    n++;
     var m = 0;
     while (!className("android.widget.Image").indexInParent(2).exists()) {
         do {
             var image = captureScreen();
-            var f = images.findColorInRegion(image, "#1A1F25", x, y, w, h1, 15);
-        } while (m != 0 && f)
+            var f = images.findColorInRegion(image, "#1A1F25", x0, y0, w0, 1, 15);
+        } while (m > 0 && f)
         while (!f) {
             var image = captureScreen();
-            f = images.findColorInRegion(image, "#1A1F25", x, y, w, h1, 15);
+            f = images.findColorInRegion(image, "#1A1F25", x0, y0, w0, 1, 15);
         }
-        if (m != 0) { var time = new Date(); }
         if (depth(29).findOne().text() == '        ') {
             var h = depth(29).findOne().bounds().height();
         } else {
-            var h = depth(29).text("").findOne().bounds().top - depth(28).findOne().bounds().top;
+            var h = depth(29).text("").findOne().bounds().top - y1;
         }
-        var img = images.clip(image, x, y, w, h1 + 7 > h ? h1 : h2);
+        if (m != 0) { var start = new Date(); }
+        var img = images.clip(image, x1, y1, w1, h1 + 7 > h ? h1 : h2);
         words = paddle.ocrText(img);
         img.recycle();
         if (words.length == 0) {
@@ -5008,23 +5027,27 @@ while (!text("知道了").exists()) {
         if (c != -1) {
             words[c] = "。";
         }
-        var c = words.indexOf("O");
+        c = words.indexOf("O");
         if (c != -1) {
             words[c] = "。";
         }
         if (words[0].charAt(1) == ".") {
             words[0] = words[0].slice(2);
         } else if (words[1].charAt(1) == ".") {
-            var t = words[0];
+            var a = words[0];
             words[0] = words[1].slice(2);
-            words[1] = t;
+            words[1] = a;
         }
         var t = words.join("").replace(/[\s_]/g, "");
+        c = t.indexOf("来源：");
+        if (c != -1) {
+            t = t.slice(0, c);
+        }
         if (['选择词语的正', '选择正确的读', '下列词形正确', '下列不属于二', '劳动行政部门', '2014年9', '人力资源和社'].indexOf(t.slice(0, 6)) != -1) {
             var b = className("android.widget.ListView").findOne().child(0).bounds();
             do {
                 image = captureScreen();
-            } while (!images.findColorInRegion(image, "#1A1F25", b.left, b.top, b.width(), b.height(), 15));
+            } while (!images.findColorInRegion(image, "#1A1F25", x0, b.centerY(), b.width(), 1, 15));
             var img = images.clip(image, b.left, b.top, b.width(), b.height());
             words = paddle.ocrText(img);
             img.recycle();
@@ -5032,89 +5055,99 @@ while (!text("知道了").exists()) {
                 words[0] = words[0].slice(2);
             }
             var a = words.join("").replace(/[\s]/g, "");
-            var R = a.split("");
-            var r = R.length;
+            if (a.charAt(0) == "防") {
+                a = "妨碍";
+            }
+            var X = a.split("");
+            var x = X.length;
             c = 0;
             var scr = 0.7;
             let i = 0;
             while (i < o) {
                 var score = 0;
-                for (let h = 0; h < r; h++) {
-                    if (A[i].includes(R[h])) {
+                for (let h = 0; h < x; h++) {
+                    if (A[i].includes(X[h])) {
                         score++;
                     }
                 }
                 if (score >= scr) {
-                    score = score - Math.abs(A[i].length - r) / 10;
+                    score = score - Math.abs(A[i].length - x) / 10;
                     if (score >= scr) {
                         c = O[i];
                         scr = score;
-                        if (scr == r) { break; }
+                        if (scr == x) { break; }
                     }
                 }
                 i++;
             }
             if (m != 0) {
-                var wait = d - (new Date() - time);
-                if (wait > 0) { sleep(wait); }
+                var d = w - (new Date() - start);
+                if (d > 0) { sleep(d); }
                 if (className("android.widget.Image").indexInParent(2).exists()) { break; }
             }
             className("android.widget.ListView").findOne().child(c).child(0).click();
-            U[u + m] = ["A" + n + (m + 1), scr / r, c, t, JSON.stringify(words)];
+            a = "A";
+            scr = scr / x;
         } else if (t.includes("照宪")) {
             if (m != 0) {
-                var wait = d - (new Date() - time);
-                if (wait > 0) { sleep(wait); }
+                var d = w - (new Date() - start);
+                if (d > 0) { sleep(d); }
                 if (className("android.widget.Image").indexInParent(2).exists()) { break; }
             }
-            if (h > h0 * 6) {
+            if (h > h1 * 6) {
                 className("android.widget.ListView").findOne().child(1).child(0).click();
-                U[u + m] = ["?" + n + (m + 1), 1, 1, t, JSON.stringify(words)];
+                c = 1;
             } else {
                 className("android.widget.ListView").findOne().child(0).child(0).click();
-                U[u + m] = ["?" + n + (m + 1), 1, 0, t, JSON.stringify(words)];
+                c = 0;
             }
+            var a = "?";
+            var scr = 1;
         } else if (t.includes("关因")) {
             if (m != 0) {
-                var wait = d - (new Date() - time);
-                if (wait > 0) { sleep(wait); }
+                var d = w - (new Date() - start);
+                if (d > 0) { sleep(d); }
                 if (className("android.widget.Image").indexInParent(2).exists()) { break; }
             }
-            if (h > h0 * 5.5) {
+            if (h > h1 * 5.4) {
                 className("android.widget.ListView").findOne().child(0).child(0).click();
-                U[u + m] = ["?" + n + (m + 1), 1, 0, t, JSON.stringify(words)];
+                c = 0;
             } else {
                 className("android.widget.ListView").findOne().child(1).child(0).click();
-                U[u + m] = ["?" + n + (m + 1), 1, 1, t, JSON.stringify(words)];
+                c = 1;
             }
+            var a = "?";
+            var scr = 1;
         } else if (t.includes("4年2")) {
             if (m != 0) {
-                var wait = d - (new Date() - time);
-                if (wait > 0) { sleep(wait); }
+                var d = w - (new Date() - start);
+                if (d > 0) { sleep(d); }
                 if (className("android.widget.Image").indexInParent(2).exists()) { break; }
             }
-            if (h > h0 * 9) {
+            if (h > h1 * 9) {
                 className("android.widget.ListView").findOne().child(3).child(0).click();
-                U[u + m] = ["?" + n + (m + 1), 1, 3, t, JSON.stringify(words)];
+                c = 3;
             } else {
                 className("android.widget.ListView").findOne().child(0).child(0).click();
-                U[u + m] = ["?" + n + (m + 1), 1, 0, t, JSON.stringify(words)];
+                c = 0;
             }
+            var a = "?";
+            var scr = 1;
         } else {
-            var R = t.split("");
-            var r = R.length;
+            var X = t.split("");
+            var x = X.length;
             c = 1;
             var scr = 0.7;
             let i = 0;
             while (i < k) {
-                var s = T[i].slice(0, r);
+                var s = T[i].slice(0, x);
                 var score = 0;
-                for (let h = 0; h < r; h++) {
-                    if (s.includes(R[h])) {
+                for (let h = 0; h < x; h++) {
+                    if (s.includes(X[h])) {
                         score++;
                     }
                 }
-                score = score / r;
+                score = score / x;
                 if (score > scr) {
                     c = K[i];
                     scr = score - (t == s ? 0 : 0.01);
@@ -5123,13 +5156,15 @@ while (!text("知道了").exists()) {
                 i++;
             }
             if (m != 0) {
-                var wait = d - (new Date() - time);
-                if (wait > 0) { sleep(wait); }
+                var d = w - (new Date() - start);
+                if (d > 0) { sleep(d); }
                 if (className("android.widget.Image").indexInParent(2).exists()) { break; }
             }
             className("android.widget.ListView").findOne().child(c).child(0).click();
-            U[u + m] = ["T" + n + (m + 1), scr, c, t, JSON.stringify(words)];
+            a = "T";
         }
+        U[u + m] = [a + n + (-m - 1), h, c, scr, JSON.stringify(words), t];
+        log(U[u + m].join("|"));
         m++;
         sleep(2000);
         if (text("继续挑战").exists()) {
@@ -5153,7 +5188,6 @@ while (!text("知道了").exists()) {
             t = t.replace("来源：", " 来源：");
         }
         U[u + i].push(t, L.child(i).child(3).text(), L.child(i).child(4).text(), L.child(i).child(0).text().slice(0, 12));
-        log(U[u + i].join("|"));
     }
     u = U.length;
     back();
@@ -5166,11 +5200,10 @@ while (!text("知道了").exists()) {
             text("随机匹配").findOne().parent().child(0).click();
         }
         sleep(500);
-        n++;
     } else {
-        toastLog("本次答题结束");
         break;
     }
 }
+toastLog("本次竞赛" + n + "局");
 log(U);
 exit();
