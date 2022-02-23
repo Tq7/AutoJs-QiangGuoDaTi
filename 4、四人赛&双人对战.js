@@ -3,7 +3,7 @@ const v = dialogs.select("请选择答题竞赛", ["四  人  赛", "双人对�
 if (v == 7) { exit(); }
 const j = rawInput("请设定本次竞赛局数", 2);
 if (j < 1) { exit(); }
-var w = rawInput("请设置作答延迟时间 (ms)", 520);
+var w = rawInput("请设置最低作答延迟 (ms)", 520);
 if (w < 500) { w = 500; }
 var thd = threads.start(function () {
     className("android.widget.Button").text("立即开始").findOne().click();
@@ -5034,7 +5034,7 @@ else {
     toastLog("双人对战开始");
 }
 sleep(500);
-const x0 = 142;//142;135;
+/*const x0 = 142;//142;135;
 const y0 = 750;//750;723;
 const w0 = 15;
 const x1 = 85;
@@ -5043,8 +5043,8 @@ const w1 = 910;
 const h1 = 81;
 const h2 = 159;
 depth(30).waitFor();
-//以上8个参数与屏幕截图的检测和识别区域相关，建议根据机型修改数值以加快首题答题速度，同时删除以下13行代码。*/
-/*const b30 = depth(30).findOne().bounds();
+//以上8个参数与屏幕截图的检测和识别区域相关，建议根据机型修改数值以降低首题作答延迟，同时删除以下13行代码。*/
+const b30 = depth(30).findOne().bounds();
 const b28 = depth(28).findOne().bounds();
 const b21 = depth(21).findOnce(1).bounds();
 const x0 = parseInt(b30.left + (b30.left - b28.left) / 3 * 2);
@@ -5130,7 +5130,7 @@ while (!text("知道了").exists()) {
             var X = a.split("");
             var x = X.length;
             c = 0;
-            var scr = 0.7;
+            var scr = 0.6;
             let i = 0;
             while (i < o) {
                 var score = 0;
@@ -5179,7 +5179,7 @@ while (!text("知道了").exists()) {
             var X = t.split("");
             var x = X.length;
             c = 1;
-            var scr = 0.7;
+            var scr = 0.6;
             let i = 0;
             while (i < k) {
                 var a = T[i].slice(0, x);
