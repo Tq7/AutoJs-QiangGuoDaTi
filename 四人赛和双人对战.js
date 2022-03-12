@@ -5149,17 +5149,17 @@ if (text("知道了").exists()) {
     toastLog("今日竞赛局数已达上限");
     exit();
 }
-const x0 = 142;//142;135;
-const y0 = 750;//750;723;
+/*const x0 = 135;//142;//135;
+const y0 = 723;//750;//723;
 const w0 = 15;
 const x1 = 85;
-const y1 = 694;//694;666;
+const y1 = 666;//694;//666;
 const w1 = 910;
 const h1 = 81;
 const h2 = 159;
 depth(30).waitFor();
 //以上8个参数与屏幕截图的检测和识别区域相关，建议根据机型修改数值以降低首题作答延迟时间，同时删除以下13行代码。*/
-/*const b30 = depth(30).findOne().bounds();
+const b30 = depth(30).findOne().bounds();
 const b28 = depth(28).findOne().bounds();
 const b21 = depth(21).findOnce(1).bounds();
 const x0 = parseInt(b30.left + (b30.left - b28.left) / 3 * 2);
