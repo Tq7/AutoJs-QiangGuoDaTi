@@ -14,7 +14,7 @@ if (!requestScreenCapture()) {
 }
 thd.interrupt();
 launch("cn.xuexi.android");
-toastLog("预热OCR，加载题库");
+toastLog("加载题库，预热OCR");
 const A = ['蓓蕾beilei',
     '迸beng裂',
     '庇bi护',
@@ -5309,25 +5309,25 @@ do {
             var X = t.split("");
             var x = X.length;
             c = 1;
-            var scr = 0.6;
+            var scr = 0.6 * x + 6;
             let i = 0;
             while (i < k) {
                 var a = T[i].slice(0, x);
-                var score = 0;
-                for (let h = 0; h < x; h++) {
+                var score = 6;
+                for (let h = 0; score - h && h < x; h++) {
                     if (a.includes(X[h])) {
                         score++;
                     }
                 }
-                score = score / x;
                 if (score >= scr) {
                     c = K[i];
-                    scr = score - (t == a ? 0 : 0.01);
-                    if (scr == 1) { break; }
+                    scr = score;
+                    if (t == a) { break; }
                 }
                 i++;
             }
             a = "T";
+            scr = (scr - 6) / x;
         }
         if (m != 0) {
             var d = w - (new Date() - start);
