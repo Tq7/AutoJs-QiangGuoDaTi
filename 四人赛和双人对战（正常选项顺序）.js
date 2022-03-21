@@ -1,10 +1,22 @@
 auto.waitFor();
 const v = dialogs.select("请选择答题竞赛", ["双人对战", "四  人  赛"]);
-if (v == -1) { exit(); }
-const j = rawInput("请设定本次竞赛局数", v + 1);
-if (j < 1) { exit(); }
+if (v == -1) {
+    toastLog("未选择答题竞赛");
+    exit();
+}
+log("已选答题竞赛:", v ? "四人赛" : "双人对战");
+const j = parseInt(rawInput("请设定本次竞赛局数", v + 1));
+if (j < 1) {
+    toastLog("本次竞赛局数过少");
+    exit();
+}
+log("本次竞赛局数:", j);
 var w = rawInput("请设置最低作答延时 (ms)", 511);
-if (w < 500) { w = 500; }
+if (w < 500) {
+    toastLog("最低作答延时过低");
+    w = 500;
+}
+log("最低作答延时:", w + "ms");
 var thd = threads.start(function () {
     className("android.widget.Button").text("立即开始").findOne().click();
 });
@@ -13,8 +25,12 @@ if (!requestScreenCapture()) {
     exit();
 }
 thd.interrupt();
-launch("cn.xuexi.android");
-toastLog("加载题库，预热OCR");
+log("请求截图权限成功");
+if (!launch("cn.xuexi.android")) {
+    toastLog("启动学习强国失败");
+    exit();
+}
+log("启动学习强国成功");
 const A = ['蓓蕾beilei',
     '迸beng裂',
     '庇bi护',
@@ -5121,9 +5137,11 @@ const K = [1,
     0];
 const o = O.length;
 const k = K.length;
+log("竞赛题库加载成功");
 var U = [];
 var u = 0;
 var n = 0;
+toastLog("预热PaddleOCR");
 var image = captureScreen();
 var words = paddle.ocrText(image);
 if (text("继续挑战").exists()) {
@@ -5134,13 +5152,14 @@ if (text("继续挑战").exists()) {
         sleep(500);
         text("我要答题").findOne().parent().click();
     }
-    if (v == 1) {
+    if (v) {
         text("答题竞赛").findOne().parent().child(8).click();
     } else {
         text("答题竞赛").findOne().parent().child(9).click();
     }
 }
-if (v == 1) {
+toastLog("进行答题竞赛");
+if (v) {
     text("开始比赛").findOne().click();
     toastLog("四人赛开始");
 } else {
@@ -5153,22 +5172,22 @@ if (text("知道了").exists()) {
     toastLog("今日竞赛局数已达上限");
     exit();
 }
-/*const x0 = 135;
-const y0 = 723;
-const w0 = 15;
+/*const x0 = 112;//142;//135;
+const y0 = 730;//750;//723;
+const w0 = 23;//1;//15;
 const x1 = 85;
-const y1 = 666;
+const y1 = 694;//694;//666;
 const w1 = 910;
 const h1 = 81;
 const h2 = 159;
-depth(30).waitFor();
+depth(30).waitFor();//等待首题出现
 //以上8个参数与屏幕截图的检测和识别区域相关，建议根据屏幕分辨率和答题界面布局修改数值，以降低首题作答延迟，同时删除以下13行代码。*/
 const b30 = depth(30).findOne().bounds();
 const b28 = depth(28).findOne().bounds();
 const b21 = depth(21).findOnce(1).bounds();
-const x0 = parseInt(b30.left + (b30.left - b28.left) / 3 * 2);
-const y0 = parseInt(b28.top + b21.height() / 136 * 19);
-const w0 = parseInt(b28.width() / 63);
+const x0 = parseInt(b30.left + (b30.left - b28.left) / 5);
+const y0 = parseInt(b28.top + b21.height() / 34 * 3);
+const w0 = parseInt(b28.width() / 42);
 const x1 = parseInt(b30.left - (b30.left - b28.left) / 3);
 const y1 = b28.top;
 const w1 = parseInt(b30.width() + (b28.width() - b30.width()) / 3);
@@ -5182,15 +5201,16 @@ do {
         do {
             var image = captureScreen();
             var f = images.findColorInRegion(image, "#1A1F25", x0, y0, w0, 1, 15);
-        } while (m > 0 && f)
+        } while (m && f)
         while (!f) {
             var image = captureScreen();
             f = images.findColorInRegion(image, "#1A1F25", x0, y0, w0, 1, 15);
         }
-        if (m != 0) {
+        log("题目已出现", f);
+        if (m) {
             var start = new Date();
         } else {
-            if (v == 1) {
+            if (v) {
                 if (depth(24).indexInParent(3).findOnce(1).text() != 0 || depth(24).indexInParent(3).findOnce(2).text() != 0 || depth(24).indexInParent(3).findOnce(3).text() != 0) {
                     toastLog("对手作弊，本局无效，请勿作答！");
                     device.keepScreenOn(30000);
@@ -5212,10 +5232,11 @@ do {
         var img = images.clip(image, x1, y1, w1, h1 + 7 > h ? h1 : h2);
         words = paddle.ocrText(img);
         img.recycle();
-        if (words.length == 0) {
-            toastLog("未识别到题目");
+        if (!words.length) {
+            toastLog("题目识别失败");
             continue;
         }
+        log("题目识别成功:", words);
         var c = words.indexOf("0");
         if (c != -1) {
             words[c] = "。";
@@ -5278,7 +5299,9 @@ do {
                     if (score >= scr) {
                         c = O[i];
                         scr = score;
-                        if (scr == x) { break; }
+                        if (scr == x) {
+                            break;
+                        }
                     }
                 }
                 i++;
@@ -5326,21 +5349,23 @@ do {
                 if (score > scr) {
                     c = K[i];
                     scr = score;
-                    if (t == a) { break; }
+                    if (t == a) {
+                        break;
+                    }
                 }
                 i++;
             }
             a = "T";
             scr = (scr - 5) / x;
         }
-        if (m != 0) {
+        if (m) {
             var d = w - (new Date() - start);
             if (d > 0) { sleep(d); }
             if (className("android.widget.Image").indexInParent(2).exists()) {
                 break;
             }
-        } else if (n < j || scr == 0.6) {
-            if (v == 1) {
+        } else if (n < j || scr == 0.7) {
+            if (v) {
                 if (depth(24).indexInParent(3).findOnce(1).text() != 0 || depth(24).indexInParent(3).findOnce(2).text() != 0 || depth(24).indexInParent(3).findOnce(3).text() != 0) {
                     toastLog("对手太强，本局无效，请勿作答！");
                     device.keepScreenOn(30000);
@@ -5360,7 +5385,7 @@ do {
         m++;
         sleep(2000);
     } while (!(className("android.widget.Image").indexInParent(2).exists() || text("继续挑战").exists()))
-    if (m != 0) {
+    if (m) {
         text("回顾本局答题").findOne().click();
         var L = text("温故知新").findOne().parent().parent().parent().child(1);
         m = L.childCount();
@@ -5382,10 +5407,12 @@ do {
         u = U.length;
         back();
         n++;
-    } else { sleep(3000); }
+    } else {
+        sleep(3000);
+    }
     if (n < j) {
         text("继续挑战").findOne().click();
-        if (v == 1) {
+        if (v) {
             text("开始比赛").findOne().click();
         }
         else {
@@ -5396,6 +5423,6 @@ do {
         break;
     }
 } while (!text("知道了").exists())
-toastLog("本次完成竞赛" + n + "局");
+toastLog("本次竞赛完成" + n + "局");
 log(U);
 exit();
