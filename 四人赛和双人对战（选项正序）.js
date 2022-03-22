@@ -5336,12 +5336,12 @@ do {
             var X = t.split("");
             var x = X.length;
             c = 1;
-            var scr = 0.7 * x + 5;
+            var scr = 0.7 * x;
             let i = 0;
             while (i < k) {
                 var a = T[i].slice(0, x);
-                var score = 5;
-                for (let h = 0; score - h && h < x; h++) {
+                var score = 0;
+                for (let h = 0; (h != 5 || score) && h < x; h++) {
                     if (a.includes(X[h])) {
                         score++;
                     }
@@ -5356,7 +5356,7 @@ do {
                 i++;
             }
             a = "T";
-            scr = (scr - 5) / x;
+            scr = scr / x;
         }
         if (m) {
             var d = w - (new Date() - start);
