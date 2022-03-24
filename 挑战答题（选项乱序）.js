@@ -11,9 +11,9 @@ bridge.setWindowFilter(new JavaAdapter(AccessibilityBridge$WindowFilter, {
     }
 }));
 auto.waitFor();
-const s = dialogs.select("请选择答题目标：", ["日常刷题", "获得积分", "通关答题"]);
+const s = dialogs.select("请选择挑战目标：", ["日常刷题", "获得积分", "通关答题"]);
 switch (s) {
-    case 0: log("答题目标：日常刷题");
+    case 0: log("挑战目标：日常刷题");
         var j = parseInt(rawInput("请设定本次目标答对题数：", 5));
         if (j < 1) {
             toastLog("本次目标答对题数过少");
@@ -21,10 +21,10 @@ switch (s) {
         }
         log("本次目标答对题数：" + j);
         break;
-    case 1: log("答题目标：获得积分");
+    case 1: log("挑战目标：获得积分");
         j = 15;
         break;
-    case 2: log("答题目标：通关答题");
+    case 2: log("挑战目标：通关答题");
         j = 4000;
         break;
     default: exit();
@@ -7447,7 +7447,7 @@ const I = [,
     [2396, 2398, 2399, 2401],
     [2401, 2404, 2407, 2411],
     [2411, 2414, 2416, 2418],
-    [2418, , 2422, 2423],
+    [2418, 2422, 2422, 2423],
     [2423, 2425],
     [2425, 2432, 2436, 2440],
     [2440, 2443, 2444],
@@ -7459,9 +7459,9 @@ const I = [,
     [, 2463, 2464, 2465],
     [, 2465, 2466, 2467],
     [, 2467, 2472, 2474],
-    [2474, , 2475, 2477],
+    [2474, 2475, 2475, 2477],
     [2477, 2480, 2484, 2486],
-    [2486, , 2487, 2489],
+    [2486, 2487, 2487, 2489],
     [, , 2489, 2493],
     [, 2493, 2496],
     [, 2496, 2498],
@@ -7481,7 +7481,7 @@ const I = [,
     [, , 2530, 2531],
     [, 2531, 2533],
     [, 2533, 2534],
-    [2534, , 2535, 2536],
+    [2534, 2535, 2535, 2536],
     [, , 2536, 2537],
     ,
     [, 2537, 2538],
@@ -7578,17 +7578,17 @@ if (text("再来一局").exists()) {
 }
 toastLog("挑战答题开始");
 do {
-    var T = depth(25).findOne().text();
-    if (T) {
+    var Q = depth(25).findOne().text();
+    if (Q) {
         var O = className("android.widget.ListView").findOne().children().map(a => {
             return a.child(0).child(1).text();
         });
-        var t = T.length;
+        var q = Q.length;
         var o = O.length;
-        let i = I[t][o - 2];
-        var k = I[t][o - 1];
+        let i = I[q][o - 2];
+        let k = I[q][o - 1];
         while (i < k) {
-            if (T == TK[i][0]) {
+            if (Q == TK[i][0]) {
                 let l = 0;
                 while (l < o) {
                     if (O.indexOf(TK[i][1][l]) == -1) {
@@ -7608,11 +7608,9 @@ do {
                 break;
             } else {
                 device.keepScreenOn(60000);
-                MT[m] = [t, o, T, O];
-                log("*[新题]*\n", MT[m]);
-                var a = T;
+                var a = Q;
                 let v = 33;
-                while (a == T && v) {
+                while (a == Q && v) {
                     device.vibrate(250);
                     sleep(1250);
                     a = depth(25).findOne().text();
@@ -7621,14 +7619,17 @@ do {
                 if (!v) {
                     className("android.widget.ListView").findOne().child(1).child(0).click();
                 }
-                //MT[m][4] = 正确答案;...
+                //获取正确答案...
+                MT[m] = [q, o, Q, O];
+                log("*[新题]*\n", MT[m]);
                 NT.push(MT[m]);
                 //答错分享复活...
                 j++;
             }
         } else {
+            log([q, o, Q, O, "正确答案：" + TK[i][2]].join(" | "));
             className("android.widget.ListView").findOne().child(O.indexOf(TK[i][2])).child(0).click();
-            MT[m] = [t, o].concat(TK[i]);
+            MT[m] = [q, o].concat(TK[i]);
         }
         sleep(1111);
         m++;
@@ -7644,11 +7645,10 @@ if (text("挑战结束").exists()) {
     text("结束本局").findOne().click();
     sleep(500);
 }
-log("#答题记录#\n", MT);
 log(textStartsWith("本次答对").findOne().text());
-if (NT) {
-    console.info(NT);//自动更新题库...
-}
+if (NT.length) {
+    console.info(NT);
+}//自动更新题库...
 if (text("能力爆表，全部通关！").exists()) {
     log(MT);
 }
