@@ -136,8 +136,10 @@ do {
                 words[1] = a;
             }
         } catch (err) {
-            toastLog("题目识别失败");
-            continue;
+            if (!words.length) {
+                toastLog("题目识别失败");
+                continue;
+            }
         }
         var Qx = words.join("");
         var Q = Qx.replace(/[\s_]/g, "");
@@ -158,10 +160,17 @@ do {
             var img = images.clip(image, B[0].left, B[0].top, B[0].width(), B[0].height());
             words = paddle.ocrText(img, 4, false);
             img.recycle();
-            if (words[0].charAt(1) == ".") {
-                words[0] = words[0].slice(2);
-            } else if (words[0].charAt(0) == "A") {
-                words[0] = words[0].slice(1);
+            try {
+                if (words[0].charAt(1) == ".") {
+                    words[0] = words[0].slice(2);
+                } else if (words[0].charAt(0) == "A") {
+                    words[0] = words[0].slice(1);
+                }
+            } catch (err) {
+                if (!words.length) {
+                    toastLog("选项识别失败");
+                    continue;
+                }
             }
             Ox[0] = words.join("");
             var a = Ox[0].replace(/\s/g, "");
@@ -316,21 +325,23 @@ do {
                     var img = images.clip(image, B[i].left, B[i].top, B[i].width(), B[i].height());
                     words = paddle.ocrText(img, 4, false);
                     img.recycle();
+                    Ox[i] = words.join("");
                     try {
-                        if (words[0].charAt(1) == ".") {
-                            words[0] = words[0].slice(2);
-                        } else if (['A', 'B', 'C', 'D'].indexOf(words[0].charAt(0)) != -1) {
-                            words[0] = words[0].slice(1);
+                        if (Ox[i].charAt(1) == ".") {
+                            Ox[i] = Ox[i].slice(2);
+                        } else if (['A', 'B', 'C', 'D'].indexOf(Ox[i].charAt(0)) != -1) {
+                            Ox[i] = Ox[i].slice(1);
                         }
                     } catch (err) {
-                        toastLog("选项识别失败");
-                        do {
-                            image = captureScreen();
-                        } while (!images.findColorInRegion(image, "#1A1F25", x1 + x1, B[0].top + h1, x1, 1, 15));
-                        i--;
-                        continue;
+                        if (!words.length) {
+                            toastLog("选项识别失败");
+                            do {
+                                image = captureScreen();
+                            } while (!images.findColorInRegion(image, "#1A1F25", x1 + x1, B[0].top + h1, x1, 1, 15));
+                            i--;
+                            continue;
+                        }
                     }
-                    Ox[i] = words.join("");
                     var a = Ox[i].replace(/\s/g, "");
                     if (a == A) {
                         c = i;
@@ -374,12 +385,13 @@ do {
             }
         }
         className("android.widget.ListView").findOne().child(c).child(0).click();
-        U[u + m] = ["Q" + (n + 1) + (-m - 1), scr, o, A, h, l, Qx, Ox.join("|"), Ox[c], B.join("|")];
+        sleep(1250);
+        U[u + m] = ["Q" + (n + 1) + (-m - 1), scr, o, A, h, l, Qx, Ox.join("|"), Ox[c]];
         log(U[u + m].join(" | "));
         var date = new Date();
         date = date.getFullYear() + (date.getMonth() < 9 ? '0' : '') + (date.getMonth() + 1) + (date.getDate() < 10 ? '0' : '') + date.getDate() + '-'
             + (date.getHours() < 10 ? '0' : '') + date.getHours() + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes() + (date.getSeconds() < 10 ? '0' : '') + date.getSeconds();
-        //images.save(image, dir + date + '.png');
+        images.save(image, dir + date + '.png');
         Ox = [];
         for (let i = 0; i < o; i++) {
             if (B[i].top >= h0) {
@@ -395,24 +407,23 @@ do {
             var img = images.clip(image, B[i].left, B[i].top, B[i].width(), B[i].height());
             words = paddle.ocrText(img, 4, false);
             img.recycle();
+            Ox[i] = words.join("");
             try {
-                if (words[0].charAt(1) == ".") {
-                    words[0] = words[0].slice(2);
-                } else if (['A', 'B', 'C', 'D'].indexOf(words[0].charAt(0)) != -1) {
-                    words[0] = words[0].slice(1);
+                if (Ox[i].charAt(1) == ".") {
+                    Ox[i] = Ox[i].slice(2);
+                } else if (['A', 'B', 'C', 'D'].indexOf(Ox[i].charAt(0)) != -1) {
+                    Ox[i] = Ox[i].slice(1);
                 }
             } catch (err) {
                 toastLog("选项识别失败");
                 Ox[i] = "NULL";
                 continue;
             }
-            Ox[i] = words.join("");
         }
         //查重...
         TiKu.execSQL("insert into TiKu(o,Answer,h,l,Questionx,Optionsx,Answerx,Bounds,device,date) values("
             + o + ",'" + A + "'," + h + "," + l + ",'" + Qx + "','" + Ox.join("|") + "','" + Ox[c] + "','" + B.join("|") + "','" + dev + "','" + date + "')");
         m++;
-        sleep(1333);
     } while (!(className("android.widget.Image").indexInParent(2).exists() || text("继续挑战").exists()))
     if (m) {
         text("回顾本局答题").findOne().click();
